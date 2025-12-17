@@ -62,7 +62,8 @@ class AnonMessagesBot:
                 )
                 self.bot.register_next_step_handler(message, self.handle_yes_no_message(self.change_username, lambda m: None))
                 return
-            send_msg('Добро пожаловать! Выберите код, по которому вам можно будет написать.')
+            send_msg('Добро пожаловать! Это - бот, позволяющий обмениваться анонимными сообщениями. В отличие от аналогов он не скидывает случайные сообщения и реально анонимен (он вообще не имеет возможности просмотра отправителей). Чтобы написать кому-то просто введите его код или используйте его ссылку.')
+            send_msg('А теперь выберите ваш код, по которому вам можно будет написать (русские или латинские буквы, цифры, дефис и нижнее подчеркивание).')
             self.bot.register_next_step_handler(message, self.handle_cmd_set_username)
         else:
             if not self.users.find_user_by_chat_id(message.chat.id):
@@ -115,7 +116,11 @@ class AnonMessagesBot:
 
 
     def run(self):
-        self.bot.polling()
+        try:
+           self.bot.polling()
+        except:
+            self.users.notify_admin("Bot falt with an exception, check logs")
+            raise
 
     @staticmethod
     def get_yes_no_reply_markup():
